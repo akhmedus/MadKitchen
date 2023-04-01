@@ -7,30 +7,30 @@ public class KitchenObject : MonoBehaviour
     [SerializeField]
     private KitchenObjects _kitchenObjects;
 
-    private CleanDishes _cleanDishes;
+    private IObjectProperties _objectProperties;
 
-    public void SetCleanDishes(CleanDishes cleanDishes) 
+    public void SetObjectProperties(IObjectProperties objectProperties) 
     {
-        if (_cleanDishes != null) 
+        if (_objectProperties != null) 
         {
-            _cleanDishes.CleanKitchenObject();
+            _objectProperties.CleanKitchenObject();
         }
 
-        _cleanDishes = cleanDishes;
+        _objectProperties = objectProperties;
 
-        if (cleanDishes.IsKitchenObject()) 
+        if (objectProperties.IsKitchenObject()) 
         {
             Debug.Log("Already has a KitchenObject!!!");
         }
 
-        cleanDishes.SetKitchenObject(this);
+        objectProperties.SetKitchenObject(this);
 
-        transform.parent = cleanDishes.GetNextCounterSpawn();
+        transform.parent = objectProperties.GetNextCounterSpawn();
         transform.localPosition = Vector3.zero;
     }
-    public CleanDishes GetCleanDishes() 
+    public IObjectProperties GetObjectProperties() 
     {
-        return _cleanDishes;
+        return _objectProperties;
     }
     public KitchenObjects GetKitchenObjects() 
     {

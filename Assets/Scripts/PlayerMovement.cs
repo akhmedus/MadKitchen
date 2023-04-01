@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour, IObjectProperties
 {
     [SerializeField]
     private float _playerSpeed = 8f;
@@ -24,17 +24,22 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private LayerMask _kitchenware;
 
-    private CleanDishes _selectedKitchenware;
+    private MainCounter _selectedCounter;
 
     [HideInInspector]
     public event EventHandler<SelectedKitchenwareEvent> _selectedKitchenwareEvent;
     [HideInInspector]
     public class SelectedKitchenwareEvent : EventArgs 
     {
-        public CleanDishes selectedKitchenware;
+        public MainCounter selectedCounter;
     }
 
     public static PlayerMovement PMInstance { get; private set; }
+
+    [SerializeField]
+    private Transform _spawn;
+
+    private KitchenObject _kitchenObject;
 
     private void Awake()
     {
@@ -50,9 +55,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void _inputManager__interactActions(object sender, EventArgs e)
     {
-        if (_selectedKitchenware != null) 
+        if (_selectedCounter != null) 
         {
-            _selectedKitchenware.Interact();
+            _selectedCounter.Interact(this);
         }
     }
 
@@ -120,11 +125,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (Physics.Raycast(transform.position, _currentPosition, out RaycastHit hit, 1f, _kitchenware))
         {
-            if (hit.transform.TryGetComponent(out CleanDishes cleanDishes)) 
+            if (hit.transform.TryGetComponent(out MainCounter mainCounter)) 
             {
-                if (cleanDishes != _selectedKitchenware)
+                if (mainCounter != _selectedCounter)
                 {
-                    SetSelectedKitchenware(cleanDishes);
+                    SetSelectedKitchenware(mainCounter);
                 }
             }
             else
@@ -138,13 +143,38 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void SetSelectedKitchenware(CleanDishes kitchenware) 
+    private void SetSelectedKitchenware(MainCounter mainCounter) 
     {
-        this._selectedKitchenware = kitchenware;
+        this._selectedCounter = mainCounter;
 
         _selectedKitchenwareEvent?.Invoke(this, new SelectedKitchenwareEvent
         {
-            selectedKitchenware = kitchenware
+            selectedCounter = mainCounter
         });
+    }
+
+    public Transform GetNextCounterSpawn()
+    {
+        return _spawn;
+    }
+
+    public void SetKitchenObject(KitchenObject kitchenObject)
+    {
+        this._kitchenObject = kitchenObject;
+    }
+
+    public KitchenObject GetKitchenObject()
+    {
+        return _kitchenObject;
+    }
+
+    public void CleanKitchenObject()
+    {
+        _kitchenObject = null;
+    }
+
+    public bool IsKitchenObject()
+    {
+        return _kitchenObject != null;
     }
 }

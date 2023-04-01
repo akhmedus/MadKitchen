@@ -6,9 +6,9 @@ using UnityEngine;
 public class SelectedKitchenware : MonoBehaviour
 {
     [SerializeField]
-    private CleanDishes _cleanDishes;
+    private MainCounter _mainCounter;
 
-    public GameObject _gameObject;
+    public GameObject[] _gameObjects;
 
     private void Start()
     {
@@ -17,7 +17,7 @@ public class SelectedKitchenware : MonoBehaviour
 
     private void PMInstance__selectedKitchenwareEvent(object sender, PlayerMovement.SelectedKitchenwareEvent e)
     {
-        if (e.selectedKitchenware == _cleanDishes)
+        if (e.selectedCounter == _mainCounter)
         {
             Show();
         }
@@ -29,10 +29,16 @@ public class SelectedKitchenware : MonoBehaviour
 
     private void Show()
     {
-        _gameObject.SetActive(true);
+        foreach (var gameObject in _gameObjects) 
+        {
+            gameObject.SetActive(true);
+        }
     }
     private void Hide()
     {
-        _gameObject.SetActive(false);
+        foreach (var gameObject in _gameObjects)
+        {
+            gameObject.SetActive(false);
+        }
     }
 }
