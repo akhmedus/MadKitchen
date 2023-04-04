@@ -9,16 +9,16 @@ public class KitchenObject : MonoBehaviour
 
     private IObjectProperties _objectProperties;
 
-    public void SetObjectProperties(IObjectProperties objectProperties) 
+    public void SetObjectProperties(IObjectProperties objectProperties)
     {
-        if (_objectProperties != null) 
+        if (_objectProperties != null)
         {
             _objectProperties.CleanKitchenObject();
         }
 
         _objectProperties = objectProperties;
 
-        if (objectProperties.IsKitchenObject()) 
+        if (objectProperties.IsKitchenObject())
         {
             Debug.Log("Already has a KitchenObject!!!");
         }
@@ -28,12 +28,28 @@ public class KitchenObject : MonoBehaviour
         transform.parent = objectProperties.GetNextCounterSpawn();
         transform.localPosition = Vector3.zero;
     }
-    public IObjectProperties GetObjectProperties() 
+    public IObjectProperties GetObjectProperties()
     {
         return _objectProperties;
     }
-    public KitchenObjects GetKitchenObjects() 
+    public KitchenObjects GetKitchenObjects()
     {
         return _kitchenObjects;
+    }
+
+    public void RemoveObject() 
+    {
+        _objectProperties.CleanKitchenObject();
+
+        Destroy(gameObject);
+    }
+
+    public static KitchenObject SpawnKitchenObject(KitchenObjects objects, IObjectProperties properties) 
+    {
+        var objectTransform = Instantiate(objects._prefab);
+        var kitchenObject = objectTransform.GetComponent<KitchenObject>();
+        kitchenObject.SetObjectProperties(properties);
+
+        return kitchenObject;
     }
 }

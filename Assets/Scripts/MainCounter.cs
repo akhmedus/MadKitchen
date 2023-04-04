@@ -36,4 +36,6 @@ public class MainCounter : MonoBehaviour, IObjectProperties
     {
         return _kitchenObject != null;
     }
+
+    public virtual void SecondInteract(PlayerMovement playerMovement) { }
 }

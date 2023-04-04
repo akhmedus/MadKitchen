@@ -12,9 +12,15 @@ public class ContainerCounter : MainCounter
 
     public override void Interact(PlayerMovement playerMovement)
     {
-        var objectTransform = Instantiate(_kitchenObjects._prefab);
-        objectTransform.GetComponent<KitchenObject>().SetObjectProperties(playerMovement);
+        var playerInteract = playerMovement.IsKitchenObject();
 
-        _playerInteraction?.Invoke(this, EventArgs.Empty);
+        if (!playerInteract) 
+        {
+            var objectTransform = Instantiate(_kitchenObjects._prefab);
+            objectTransform.GetComponent<KitchenObject>().SetObjectProperties(playerMovement);
+
+            _playerInteraction?.Invoke(this, EventArgs.Empty);
+        }
+        
     }
 }

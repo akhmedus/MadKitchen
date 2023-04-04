@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour, IObjectProperties
 {
+
     [SerializeField]
     private float _playerSpeed = 8f;
     private float _playerRotate = 9f;
@@ -41,6 +42,8 @@ public class PlayerMovement : MonoBehaviour, IObjectProperties
 
     private KitchenObject _kitchenObject;
 
+    private int counter = 0;
+
     private void Awake()
     {
         if (PMInstance != null) 
@@ -49,9 +52,22 @@ public class PlayerMovement : MonoBehaviour, IObjectProperties
         }
         PMInstance = this;
 
-        _inputManager._interactActions += _inputManager__interactActions;
     }
 
+    private void Start()
+    {
+        _inputManager._secondInteractActions += _inputManager__secondInteractActions;
+        _inputManager._interactActions += _inputManager__interactActions;
+
+    }
+
+    private void _inputManager__secondInteractActions(object sender, EventArgs e)
+    {
+        if (_selectedCounter != null)
+        {
+            _selectedCounter.SecondInteract(this);
+        }
+    }
 
     private void _inputManager__interactActions(object sender, EventArgs e)
     {
@@ -76,30 +92,33 @@ public class PlayerMovement : MonoBehaviour, IObjectProperties
 
 
         float pathLength = _playerSpeed * Time.deltaTime;
-        bool freezing = Physics.CapsuleCast(transform.position, transform.position + Vector3.up * _targetHeight, _targetRadius, _direction, pathLength);
+        bool freezing = !Physics.CapsuleCast(transform.position, transform.position +
+            Vector3.up * _targetHeight, _targetRadius, _direction, pathLength);
 
-        if (freezing)
+        if (!freezing)
         {
             var Xdirection = new Vector3(_direction.x, 0, 0);
-            freezing = Physics.CapsuleCast(transform.position, transform.position + Vector3.up * _targetHeight, _targetRadius, Xdirection, pathLength);
+            freezing = Xdirection.x != 0 && !Physics.CapsuleCast(transform.position, transform.position +
+                Vector3.up * _targetHeight, _targetRadius, Xdirection, pathLength);
 
-            if (!freezing)
+            if (freezing) 
             {
                 _direction = Xdirection;
             }
             else
             {
                 var Zdirection = new Vector3(_direction.z, 0, 0);
-                freezing = Physics.CapsuleCast(transform.position, transform.position + Vector3.up * _targetHeight, _targetRadius, Zdirection, pathLength);
+                freezing = Zdirection.z != 0 && !Physics.CapsuleCast(transform.position, transform.position +
+                    Vector3.up * _targetHeight, _targetRadius, Zdirection, pathLength);
 
-                if (!freezing)
+                if (freezing) 
                 {
                     _direction = Zdirection;
                 }
             }
         }
 
-        if (!freezing)
+        if (freezing)
         {
             transform.position = transform.position + _direction * pathLength;
         }
@@ -123,7 +142,7 @@ public class PlayerMovement : MonoBehaviour, IObjectProperties
             _currentPosition = _direction;
         }
 
-        if (Physics.Raycast(transform.position, _currentPosition, out RaycastHit hit, 1f, _kitchenware))
+        if (Physics.Raycast(transform.position, _currentPosition, out RaycastHit hit, 1.5f, _kitchenware))
         {
             if (hit.transform.TryGetComponent(out MainCounter mainCounter)) 
             {

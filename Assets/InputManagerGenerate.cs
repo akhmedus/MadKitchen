@@ -44,6 +44,15 @@ public partial class @InputManagerGenerate : IInputActionCollection2, IDisposabl
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SecondInteract"",
+                    ""type"": ""Button"",
+                    ""id"": ""07ac09eb-5353-4eb9-9206-1416309d4ca2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -112,6 +121,17 @@ public partial class @InputManagerGenerate : IInputActionCollection2, IDisposabl
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0d65eea7-4429-4dd3-9db1-d32ebe798668"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SecondInteract"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -122,6 +142,7 @@ public partial class @InputManagerGenerate : IInputActionCollection2, IDisposabl
         m_Target = asset.FindActionMap("Target", throwIfNotFound: true);
         m_Target_Moving = m_Target.FindAction("Moving", throwIfNotFound: true);
         m_Target_Interact = m_Target.FindAction("Interact", throwIfNotFound: true);
+        m_Target_SecondInteract = m_Target.FindAction("SecondInteract", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -183,12 +204,14 @@ public partial class @InputManagerGenerate : IInputActionCollection2, IDisposabl
     private ITargetActions m_TargetActionsCallbackInterface;
     private readonly InputAction m_Target_Moving;
     private readonly InputAction m_Target_Interact;
+    private readonly InputAction m_Target_SecondInteract;
     public struct TargetActions
     {
         private @InputManagerGenerate m_Wrapper;
         public TargetActions(@InputManagerGenerate wrapper) { m_Wrapper = wrapper; }
         public InputAction @Moving => m_Wrapper.m_Target_Moving;
         public InputAction @Interact => m_Wrapper.m_Target_Interact;
+        public InputAction @SecondInteract => m_Wrapper.m_Target_SecondInteract;
         public InputActionMap Get() { return m_Wrapper.m_Target; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -204,6 +227,9 @@ public partial class @InputManagerGenerate : IInputActionCollection2, IDisposabl
                 @Interact.started -= m_Wrapper.m_TargetActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_TargetActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_TargetActionsCallbackInterface.OnInteract;
+                @SecondInteract.started -= m_Wrapper.m_TargetActionsCallbackInterface.OnSecondInteract;
+                @SecondInteract.performed -= m_Wrapper.m_TargetActionsCallbackInterface.OnSecondInteract;
+                @SecondInteract.canceled -= m_Wrapper.m_TargetActionsCallbackInterface.OnSecondInteract;
             }
             m_Wrapper.m_TargetActionsCallbackInterface = instance;
             if (instance != null)
@@ -214,6 +240,9 @@ public partial class @InputManagerGenerate : IInputActionCollection2, IDisposabl
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @SecondInteract.started += instance.OnSecondInteract;
+                @SecondInteract.performed += instance.OnSecondInteract;
+                @SecondInteract.canceled += instance.OnSecondInteract;
             }
         }
     }
@@ -222,5 +251,6 @@ public partial class @InputManagerGenerate : IInputActionCollection2, IDisposabl
     {
         void OnMoving(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnSecondInteract(InputAction.CallbackContext context);
     }
 }
