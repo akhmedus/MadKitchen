@@ -79,7 +79,13 @@ public class CuttingBoard : MainCounter, IObjectProgress
         {
             if (playerMovement.IsKitchenObject())
             {
-
+                if (playerMovement.GetKitchenObject().TryGetPlate(out PlateObject plateObject))
+                {
+                    if (plateObject.TryAddProduct(GetKitchenObject().GetKitchenObjects()))
+                    {
+                        GetKitchenObject().RemoveObject();
+                    }
+                }
             }
             else
             {

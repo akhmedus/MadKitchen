@@ -155,7 +155,25 @@ public class StoveCounter : MainCounter, IObjectProgress
         {
             if (playerMovement.IsKitchenObject())
             {
+                if (playerMovement.GetKitchenObject().TryGetPlate(out PlateObject plateObject))
+                {
+                    if (plateObject.TryAddProduct(GetKitchenObject().GetKitchenObjects()))
+                    {
+                        GetKitchenObject().RemoveObject();
 
+                        _cutletState = CutletState.Idle;
+
+                        StateChanged?.Invoke(this, new StateChangedEventArgs
+                        {
+                            cutletState = _cutletState
+                        });
+
+                        ProgressEvent?.Invoke(this, new IObjectProgress.ProgressBarEventArgs
+                        {
+                            normalized = 0
+                        });
+                    }
+                }
             }
             else
             {

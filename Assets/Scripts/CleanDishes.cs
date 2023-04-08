@@ -28,7 +28,23 @@ public class CleanDishes : MainCounter
         {
             if (playerInteract)
             {
-
+                if (playerMovement.GetKitchenObject().TryGetPlate(out PlateObject plateObject))
+                {
+                    if (plateObject.TryAddProduct(GetKitchenObject().GetKitchenObjects()))
+                    {
+                        GetKitchenObject().RemoveObject();
+                    }
+                }
+                else 
+                {
+                    if (GetKitchenObject().TryGetPlate(out plateObject)) 
+                    {
+                        if (plateObject.TryAddProduct(playerMovement.GetKitchenObject().GetKitchenObjects()))
+                        {
+                           playerMovement.GetKitchenObject().RemoveObject();
+                        }
+                    }
+                }
             }
             else 
             {
